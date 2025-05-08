@@ -1,4 +1,4 @@
-# ParkJongHak02 - Flutter
+# ljh - Flutter
 
 
 ## 7주차 과제
