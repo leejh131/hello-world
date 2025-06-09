@@ -1,24 +1,21 @@
-import 'package:flutter/foundation.dart';
-import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 
 class Routine {
   final String id;
-  String name;
-  String category;
+  final String name;
+  final String category;
   bool isCompleted;
-  DateTime date;
-  List<String> days;
+  final List<String> days; // ['Mon', 'Tue', ...]
+  final int sets;
+  final int reps;
 
   Routine({
     required this.id,
     required this.name,
     required this.category,
-    required this.date,
-    required this.days,
     this.isCompleted = false,
+    required this.days,
+    required this.sets,
+    required this.reps,
   });
-
-  void toggleComplete() {
-    isCompleted = !isCompleted;
-  }
 }

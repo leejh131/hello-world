@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import '../providers/routine_provider.dart';
 import '../models/routine.dart';
+import '../providers/routine_provider.dart';
 
 class AddRoutineScreen extends StatefulWidget {
   @override
@@ -13,91 +13,83 @@ class _AddRoutineScreenState extends State<AddRoutineScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  List<String> _selectedDays = [];
+  final _setsController = TextEditingController();
+  final _repsController = TextEditingController();
+  final List<String> _selectedDays = [];
+  final List<String> _weekdays = ['월', '화', '수', '목', '금', '토', '일'];
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-
-    final newRoutine = Routine(
-      id: Uuid().v4(),
-      name: _nameController.text,
-      category: _categoryController.text,
-      date: _selectedDate,
-      days: _selectedDays,
-    );
-
-    Provider.of<RoutineProvider>(context, listen: false).addRoutine(newRoutine);
-    Navigator.of(context).pop();
-  }
-
-  void _toggleDay(String day) {
-    setState(() {
-      if (_selectedDays.contains(day)) {
-        _selectedDays.remove(day);
-      } else {
-        _selectedDays.add(day);
-      }
-    });
+  void _saveRoutine() {
+    if (_formKey.currentState!.validate() && _selectedDays.isNotEmpty) {
+      final newRoutine = Routine(
+        id: const Uuid().v4(),
+        name: _nameController.text,
+        category: _categoryController.text,
+        days: _selectedDays,
+        sets: int.tryParse(_setsController.text) ?? 0,
+        reps: int.tryParse(_repsController.text) ?? 0,
+      );
+      Provider.of<RoutineProvider>(context, listen: false).addRoutine(newRoutine);
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
-
     return Scaffold(
       appBar: AppBar(title: Text('루틴 추가')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: [
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: '루틴 이름'),
-                validator: (value) => value == null || value.isEmpty ? '이름을 입력하세요' : null,
+                validator: (value) => value!.isEmpty ? '값을 입력하세요' : null,
               ),
               TextFormField(
                 controller: _categoryController,
-                decoration: InputDecoration(labelText: '카테고리'),
+                decoration: InputDecoration(labelText: '부위'),
+                validator: (value) => value!.isEmpty ? '값을 입력하세요' : null,
+              ),
+              TextFormField(
+                controller: _setsController,
+                decoration: InputDecoration(labelText: '세트 수'),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? '값을 입력하세요' : null,
+              ),
+              TextFormField(
+                controller: _repsController,
+                decoration: InputDecoration(labelText: '회당 반복 횟수'),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? '값을 입력하세요' : null,
               ),
               SizedBox(height: 16),
-              Text('시작 날짜: ${_selectedDate.toLocal().toString().split(' ')[0]}'),
-              ElevatedButton(
-                onPressed: () async {
-                  DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: _selectedDate,
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime(2100),
-                  );
-                  if (picked != null) {
-                    setState(() {
-                      _selectedDate = picked;
-                    });
-                  }
-                },
-                child: Text('날짜 선택'),
-              ),
-              SizedBox(height: 16),
-              Text('반복 요일'),
+              Text('반복 요일 선택', style: TextStyle(fontWeight: FontWeight.bold)),
               Wrap(
                 spacing: 8,
-                children: daysOfWeek.map((day) {
-                  final selected = _selectedDays.contains(day);
+                children: _weekdays.map((day) {
                   return FilterChip(
                     label: Text(day),
-                    selected: selected,
-                    onSelected: (_) => _toggleDay(day),
+                    selected: _selectedDays.contains(day),
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          _selectedDays.add(day);
+                        } else {
+                          _selectedDays.remove(day);
+                        }
+                      });
+                    },
                   );
                 }).toList(),
               ),
-              SizedBox(height: 24),
+              Spacer(),
               ElevatedButton(
-                onPressed: _submit,
-                child: Text('추가하기'),
-              )
+                onPressed: _saveRoutine,
+                child: Text('저장하기'),
+              ),
             ],
           ),
         ),

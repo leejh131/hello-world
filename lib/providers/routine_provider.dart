@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../models/routine.dart';
 
-class RoutineProvider with ChangeNotifier {
+class RoutineProvider extends ChangeNotifier {
   final List<Routine> _routines = [];
 
   List<Routine> get routines => [..._routines];
@@ -11,35 +11,28 @@ class RoutineProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateRoutine(String id, {
-    required String name,
-    required String category,
-    required DateTime date,
-    required List<String> days,
-  }) {
-    final index = _routines.indexWhere((r) => r.id == id);
+  void updateRoutine(String id, Routine newRoutine) {
+    final index = _routines.indexWhere((routine) => routine.id == id);
     if (index != -1) {
-      _routines[index].name = name;
-      _routines[index].category = category;
-      _routines[index].date = date;
-      _routines[index].days = days;
+      _routines[index] = newRoutine;
       notifyListeners();
     }
   }
 
   void deleteRoutine(String id) {
-    _routines.removeWhere((r) => r.id == id);
+    _routines.removeWhere((routine) => routine.id == id);
     notifyListeners();
   }
 
   void toggleComplete(Routine routine) {
-    routine.toggleComplete();
-    notifyListeners();
+    final index = _routines.indexOf(routine);
+    if (index != -1) {
+      _routines[index].isCompleted = !_routines[index].isCompleted;
+      notifyListeners();
+    }
   }
 
-  Routine? findById(String id) {
-    final index = _routines.indexWhere((r) => r.id == id);
-    if (index == -1) return null;
-    return _routines[index];
+  List<Routine> routinesForDay(String weekday) {
+    return _routines.where((routine) => routine.days.contains(weekday)).toList();
   }
 }
