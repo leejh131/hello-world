@@ -1,1 +1,8 @@
+✅ 1주차: 기본 루틴 기능 구축
+Routine 모델 생성 (id, name, category, isCompleted, days)
 
+루틴 추가/수정 UI (AddRoutineScreen, EditRoutineScreen)
+
+루틴 목록 조회 (HomeScreen)
+
+루틴 체크박스를 통한 완료 여부 변경
