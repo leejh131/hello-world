@@ -1,8 +1,0 @@
-✅ 2주차: 요일별 루틴 기능 도입
-Routine 모델에 days: List<String> 필드 추가
-
-요일별 루틴 필터링 함수 routinesForDay(String weekday) 구현 (RoutineProvider)
-
-홈 화면에 TabBar 추가 → 요일별 루틴 보기 기능 완성
-
-루틴 생성/수정 시 요일 선택 가능 (FilterChip UI)
