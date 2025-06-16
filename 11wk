@@ -1,6 +1,0 @@
-✅ 3주차: 운동 특화 정보 확장
-Routine 모델에 sets(세트 수), reps(반복 횟수) 필드 추가
-
-AddRoutineScreen, EditRoutineScreen에 세트/횟수 입력 필드 추가
-
-루틴 카드에 세트 x 횟수 정보 표시
